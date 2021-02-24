@@ -1,13 +1,15 @@
 context("test_getODS")
 
 # urls 2 and 6 removed after execution as they become invalid over time and cause travis and testthat to fail
-# (as can only use a date within the last 6 months)
+# (as can only use a date within the last 6 months - 
+# change date to 5 days before execution date and re-execute only at time of test)
+
 url1 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?Name=Woodseats&Limit=1000"
-#url2 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?PostCode=S8&LastChangeDate=2018-03-31&Limit=1000"
+#url2 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?PostCode=S8&LastChangeDate=2021-02-20&Limit=1000"
 url3 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?Name=Woodseats&Status=Active&Limit=1000"
 url4 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?Status=Active&PrimaryRoleId=RO197&OrgRecordClass=RC1&Limit=1000"
 url5 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?Name=Lancaster&PrimaryRoleId=RO177&NonPrimaryRoleId=RO76&Limit=1000"
-#url6 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?LastChangeDate=2018-06-13&Limit=1000"
+#url6 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?LastChangeDate=2021-02-20&Limit=1000"
 url7 <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?NonPrimaryRoleId=RO256&Limit=1000" # STP
 
 
@@ -17,9 +19,9 @@ test_that("getODS - produces correct output when correct arguments specified",{
     expect_equal(getODS(Name="Woodseats"),
                  fromJSON(content(GET(url1, accept_json()), "text", encoding="UTF-8"))$Organisations,
                  check.attributes=FALSE, check.names=FALSE, info="test1")
-#    expect_equal(getODS(PostCode="S8",LastChangeDate="2018-03-31"),
-#                 fromJSON(content(GET(url2, accept_json()), "text", encoding="UTF-8"))$Organisations,
-#                 check.attributes=FALSE, check.names=FALSE, info="test2")
+ #   expect_equal(getODS(PostCode="S8",LastChangeDate="2021-02-20"),
+ #                fromJSON(content(GET(url2, accept_json()), "text", encoding="UTF-8"))$Organisations,
+ #                check.attributes=FALSE, check.names=FALSE, info="test2")
     expect_equal(getODS(Name="Woodseats", Status="Active"),
                  fromJSON(content(GET(url3, accept_json()), "text", encoding="UTF-8"))$Organisations,
                  check.attributes=FALSE, check.names=FALSE, info="test3")
@@ -32,7 +34,7 @@ test_that("getODS - produces correct output when correct arguments specified",{
  # Run this test at time of release but then comment out as number of records returned will
  # increase to >1000 over time
 
- #   expect_equal(getODS(LastChangeDate="2018-06-13"),
+ #   expect_equal(getODS(LastChangeDate="2021-02-20"),
  #                fromJSON(content(GET(url6, accept_json()), "text", encoding="UTF-8"))$Organisations,
  #                check.attributes=FALSE, check.names=FALSE, info="test6")
     expect_equal(getODS(NonPrimaryRoleId="RO256"),

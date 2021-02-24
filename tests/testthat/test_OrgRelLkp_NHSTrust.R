@@ -9,12 +9,12 @@ NHSTrust_20180831 <- NHSTrust_NHSRLO %>%
                (RelEnd >= "2018-08-31" | is.na(RelEnd)))
 
 # Make Corrections to testdata2
-# QA shows that the CSV file from 31-08-2018 contains 7 records for Trusts
+# QA shows that the CSV file from 31-08-2018 contains 8 records for Trusts
 # which closed legally before the snapshot date, but because the closure dates
 # were added to the ODS data after the snapshot date, these trusts were incorrectly
 # included in the static etr.CSV file published for Aug 2018.
 # This script removes these trust records from the testdata2 file
-to_correct <- c("R1E","RGQ","RJF", "RM2","RR1","RW3","RY1")
+to_correct <- c("R1E","RGQ","RJF", "RM2","RR1","RW3","RY1", "RJD")
 
 testdata_corrected <- testdata2 %>%
     filter(!OrganisationCode %in% to_correct)

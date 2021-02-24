@@ -4,10 +4,16 @@
 \alias{getODSfull}
 \title{getODSfull}
 \usage{
-getODSfull(ODSCode)
+getODSfull(ODSCode, UseProxy = FALSE)
 }
 \arguments{
 \item{ODSCode}{The organisation to return details for; quoted string; no default}
+
+\item{UseProxy}{Whether to use proxy settings to connect to the directory.spineservices.nhs.uk/ODSAPISuite API.
+If TRUE, the function will look for a UseProxy.csv file in the package library extdata directory.
+The file must contain a single row of comma separated headers (url, port, username, password, auth)
+and a second row specifying the values to be passed to each of these httr::use_proxy() function arguments.
+All Argument headers must be present, leave values blank if not required. Quoted string, default FALSE}
 }
 \value{
 returns a list of length 1 containing the full details for the Organisation including:
@@ -29,8 +35,10 @@ getODSfull(ODSCode="RRF12")
 
 }
 \seealso{
-Other odsR package functions: \code{\link{OrgRelLkpGP}},
-  \code{\link{OrgRelLkpNHSTrust}},
-  \code{\link{addorgname}}, \code{\link{getODS}}
+Other odsR package functions: 
+\code{\link{OrgRelLkpGP}()},
+\code{\link{OrgRelLkpNHSTrust}()},
+\code{\link{addorgname}()},
+\code{\link{getODS}()}
 }
 \concept{odsR package functions}

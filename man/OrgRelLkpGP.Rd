@@ -4,8 +4,14 @@
 \alias{OrgRelLkpGP}
 \title{OrgRelLkp}
 \usage{
-OrgRelLkpGP(PrimaryRole, NonPrimaryRole = "All", RelTypes = "None",
-  RelPrimaryRoles = "None", FromDate)
+OrgRelLkpGP(
+  PrimaryRole,
+  NonPrimaryRole = "All",
+  RelTypes = "None",
+  RelPrimaryRoles = "None",
+  FromDate,
+  UseProxy = FALSE
+)
 }
 \arguments{
 \item{PrimaryRole}{The Primary Role code for organisations to be included in the lookup;
@@ -25,6 +31,12 @@ character vector, default = "None"}
 
 \item{FromDate}{The effective date from which to include Organisations operational on or after;
 character string in the format "yyyy-mm-dd", no default}
+
+\item{UseProxy}{Whether to use proxy settings to connect to the directory.spineservices.nhs.uk/ODSAPISuite API.
+If TRUE, the function will look for a UseProxy.csv file in the package library extdata directory.
+The file must contain a single row of comma separated headers (url, port, username, password, auth)
+and a second row specifying the values to be passed to each of these httr::use_proxy() function arguments.
+All Argument headers must be present, leave values blank if not required. Quoted string, default FALSE}
 }
 \value{
 returns a data.frame of Organisation codes, names, start dates and end dates plus the start and end dates
@@ -66,8 +78,10 @@ OrgRelLkpGP("RO177","RO76","RE4",c("RO98","RO179"),"2012-04-01")
 
 }
 \seealso{
-Other odsR package functions: \code{\link{OrgRelLkpNHSTrust}},
-  \code{\link{addorgname}}, \code{\link{getODSfull}},
-  \code{\link{getODS}}
+Other odsR package functions: 
+\code{\link{OrgRelLkpNHSTrust}()},
+\code{\link{addorgname}()},
+\code{\link{getODSfull}()},
+\code{\link{getODS}()}
 }
 \concept{odsR package functions}

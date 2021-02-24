@@ -16,6 +16,7 @@
 #'                        character vector, default = "None"
 #' @param FromDate The effective date from which to include Organisations operational/legal on or after;
 #'                 character string in the format "yyyy-mm-dd", no default
+#' @inheritParams getODS
 #'
 #' @return returns a data.frame of Organisation codes, names, start dates and end dates plus the start and end dates
 #' that the organisation was in the specified role and related organisation codes & names and associated start and end dates
@@ -39,10 +40,10 @@
 #' # return NHS Trust to NHS Regional Local Office Lookup to include all organisations effective on or after 01-04-2013
 #' \dontrun{
 #' OrgRelLkpNHSTrust(PrimaryRole     = "RO197",
-#'           NonPrimaryRole  = "All",
-#'           RelTypes        = "RE5",
-#'           RelPrimaryRoles = "RO210",
-#'           FromDate        = "2013-04-01")
+#'                   NonPrimaryRole  = "All",
+#'                   RelTypes        = "RE5",
+#'                   RelPrimaryRoles = "RO210",
+#'                   FromDate        = "2013-04-01")
 #' }
 #'
 #'
@@ -58,13 +59,18 @@
 # -------------------------------------------------------------------------------------------------
 
 # create function to generate Organisation lookup data.frame
-OrgRelLkpNHSTrust <- function(PrimaryRole, NonPrimaryRole = "All", RelTypes = "None",
-                              RelPrimaryRoles = "None", OpLegal, FromDate) {
+OrgRelLkpNHSTrust <- function(PrimaryRole, 
+                              NonPrimaryRole = "All", 
+                              RelTypes = "None",
+                              RelPrimaryRoles = "None", 
+                              OpLegal, 
+                              FromDate,
+                              UseProxy = FALSE) {
 
     # display experimental message
     message("Please Note that this function is experimental and has not been thoroughly QAd
             for every possible set of arguments. It has been written to enable the generation of NHS Trust
-             to NHS Regional Local Office tables and is therefore only approved with the following arguments:
+             to NHS Regional Local Office tables with the following arguments:
             PrimaryRole RO197, NonPrimaryRole All, Reltypes RE5, RelPrimaryRoles RO210, FromDate 2013-04-01")
 
     # error handling for valid arguments
@@ -75,10 +81,13 @@ OrgRelLkpNHSTrust <- function(PrimaryRole, NonPrimaryRole = "All", RelTypes = "N
 
     # retrieve all organisations to include records for
     if(NonPrimaryRole == "All") {
-        allorgs <- getODS(PrimaryRoleId=PrimaryRole) %>%
+        allorgs <- getODS(PrimaryRoleId = PrimaryRole,
+                          UseProxy      = UseProxy) %>%
             unique()
     } else {
-        allorgs <- getODS(PrimaryRoleId=PrimaryRole,NonPrimaryRoleId=NonPrimaryRole) %>%
+        allorgs <- getODS(PrimaryRoleId    = PrimaryRole,
+                          NonPrimaryRoleId = NonPrimaryRole,
+                          UseProxy         = UseProxy) %>%
             unique()
     }
 
@@ -107,7 +116,7 @@ OrgRelLkpNHSTrust <- function(PrimaryRole, NonPrimaryRole = "All", RelTypes = "N
     for (i in (1:nrow(allorgs))) {
 
         addOrg <- NA
-        getOrg <- getODSfull(allorgs[i,2])
+        getOrg <- getODSfull(allorgs[i,2], UseProxy = UseProxy)
 
 
         # get Organisation Start and End dates - keep single record based on Datepriority

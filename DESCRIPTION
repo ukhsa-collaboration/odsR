@@ -1,7 +1,7 @@
 Package: odsR
 Type: Package
 Title: Extract and manipulate ODS data from the NHS Digital ODS ORD API
-Version: 1.0.10.9001
+Version: 1.0.11.9000
 Author: c(person("Anderson", "Georgina", , "georgina.anderson@phe.gov.uk", c("aut", "cre"))
 Maintainer: The package maintainer is <georgina.anderson@phe.gov.uk>
 Description: Functions to facilitate extraction of ODS data from the NHS Digital ODS ORD API.
@@ -25,5 +25,5 @@ Suggests:
     readxl,
     rmarkdown,
     testthat,
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

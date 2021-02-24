@@ -7,6 +7,7 @@
 #' @param NameCol the name of the column to be added holding organisation names, quoted string, default "OrgName"
 #' @param insert  whether the new OrgName column should be positioned immediately after the CodeCol column (TRUE
 #'                or appended to the end of the data frame (FALSE), logical, default TRUE
+#' @inheritParams getODS
 #'
 #' @return returns the original data.frame with Organisation Name column added
 #'
@@ -29,7 +30,11 @@
 #' @family odsR package functions
 # -------------------------------------------------------------------------------------------------
 
-addorgname <- function (data, CodeCol = "OrgId", NameCol = "OrgName", insert = TRUE) {
+addorgname <- function (data, 
+                        CodeCol = "OrgId", 
+                        NameCol = "OrgName", 
+                        insert = TRUE,
+                        UseProxy = FALSE) {
 
     # create list of unique codes
     codes <- data[CodeCol] %>%
@@ -45,7 +50,7 @@ addorgname <- function (data, CodeCol = "OrgId", NameCol = "OrgName", insert = T
             thisname <- NA
         } else {
             thiscode <- slice(codes,i)
-            thisname <- getODSfull(thiscode)$Organisation$Name
+            thisname <- getODSfull(thiscode, UseProxy)$Organisation$Name
             if (is.null(thisname)) {
                 thisname <- NA
             }

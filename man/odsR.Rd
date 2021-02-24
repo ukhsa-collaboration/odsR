@@ -3,10 +3,5 @@
 \docType{package}
 \name{odsR}
 \alias{odsR}
-\alias{odsR-package}
 \title{odsR: A package for extracting NHS organisation data
 from the NHS Digital ODS ORD API}
-\description{
-odsR: A package for extracting NHS organisation data
-from the NHS Digital ODS ORD API
-}

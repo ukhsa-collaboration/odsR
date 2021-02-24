@@ -4,8 +4,15 @@
 \alias{OrgRelLkpNHSTrust}
 \title{OrgRelLkp}
 \usage{
-OrgRelLkpNHSTrust(PrimaryRole, NonPrimaryRole = "All",
-  RelTypes = "None", RelPrimaryRoles = "None", OpLegal, FromDate)
+OrgRelLkpNHSTrust(
+  PrimaryRole,
+  NonPrimaryRole = "All",
+  RelTypes = "None",
+  RelPrimaryRoles = "None",
+  OpLegal,
+  FromDate,
+  Useproxy = FALSE
+)
 }
 \arguments{
 \item{PrimaryRole}{The Primary Role code for organisations to be included in the lookup;
@@ -62,8 +69,10 @@ OrgRelLkpNHSTrust(PrimaryRole     = "RO197",
 
 }
 \seealso{
-Other odsR package functions: \code{\link{OrgRelLkpGP}},
-  \code{\link{addorgname}}, \code{\link{getODSfull}},
-  \code{\link{getODS}}
+Other odsR package functions: 
+\code{\link{OrgRelLkpGP}()},
+\code{\link{addorgname}()},
+\code{\link{getODSfull}()},
+\code{\link{getODS}()}
 }
 \concept{odsR package functions}

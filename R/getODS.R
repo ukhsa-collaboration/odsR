@@ -17,6 +17,12 @@
 #'                 quoted string; default "All" applies no filter
 #' @param OrgRecordClass Search for organisations based on their record class. Arguments can be "RC1" or "RC2".;
 #'                 quoted string; default "All" applies no filter
+#' @param UseProxy Whether to use proxy settings to connect to the directory.spineservices.nhs.uk/ODSAPISuite API.
+#'                 If TRUE, the function will look for a UseProxy.csv file in the package library extdata directory.
+#'                 The file must contain a single row of comma separated headers (url, port, username, password, auth)
+#'                 followed by a single row of comma separated values to be passed to each of the httr::use_proxy() 
+#'                 function arguments, terminating with a carriage return. All Argument headers must be present, 
+#'                 leave values blank if not required. Quoted string, default FALSE
 #'
 #' @return returns a data.frame containing the following details for the organisations that meet the filter specifications:
 #'         Name, Organisation ID, Status, Organisation Record Class, Postcode, Last Change Date, Primary Role ID,
@@ -51,13 +57,14 @@
 # -------------------------------------------------------------------------------------------------
 
 # create function to allow user to specify parameters to input to ODS API call
-getODS <- function(Name              = "All",
-                    PostCode         = "All",
-                    LastChangeDate   = "All",
-                    Status           = "All",
-                    PrimaryRoleId    = "All",
-                    NonPrimaryRoleId = "All",
-                    OrgRecordClass   = "All") {
+getODS <- function(Name             = "All",
+                   PostCode         = "All",
+                   LastChangeDate   = "All",
+                   Status           = "All",
+                   PrimaryRoleId    = "All",
+                   NonPrimaryRoleId = "All",
+                   OrgRecordClass   = "All",
+                   UseProxy         = FALSE) {
 
  # error checks
     if (Name           == "All" & PostCode         == "All" &
@@ -79,7 +86,18 @@ getODS <- function(Name              = "All",
     } else if (!(tolower(OrgRecordClass) %in% c("all", "rc1","rc2"))) {
           stop("ERROR: OrgRecordClass is invalid - valid values are All (default), RC1 (Health and Social Care Organisation), RC2 (Health and Social Care Organisation Site)")
     }
-
+  
+    # check UseProxy is TRUE or FALSE
+    if(!is.logical(UseProxy)) {
+      stop("ERROR: UseProxy must be TRUE or FALSE")
+    } 
+  
+# read in proxy settings if using
+    if (UseProxy) {
+      path <- system.file("extdata", package = "odsR")
+      proxySettings <- read.csv(paste0(path,"/UseProxy.csv"), header = TRUE)
+    }
+  
 # define organisation search endpoint URL
     url <- "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations?"
 
@@ -119,9 +137,19 @@ getODS <- function(Name              = "All",
   set_config(config(ssl_verifypeer = 0L))
 
   # Get API response
-  httpResponse <- GET(url, accept_json())
-  #httpResponse <- GET(url,use_proxy(ie_get_proxy_for_url(.), username = "", password = "", auth = "ntlm"))
-
+  if (UseProxy) {
+    httpResponse <- GET(url, accept_json(),
+                        use_proxy(url      = proxySettings$url,
+                                  port     = proxySettings$port,
+                                  username = proxySettings$username,
+                                  password = proxySettings$password,
+                                  auth     = proxySettings$auth))
+  } else {
+    httpResponse <- GET(url, accept_json())
+  }
+  
+    
+    
   # identify pages returned - 1000 record per page (floor as will loop from 0)
   npages <- floor(as.double(httpResponse$headers$`x-total-count`)/1000)
 
@@ -132,14 +160,22 @@ getODS <- function(Name              = "All",
   for (i in 0:npages) {
         if (i == 0) {
             urlpages  <- url
-        } else
-            urlpages  <- paste0(url,"&Offset=",i*1000,sep="")
-        httpResponse1 <- GET(urlpages, accept_json())
+        } else urlpages <- paste0(url,"&Offset=",i*1000,sep="")
+
+        if (UseProxy) {
+           httpResponse1 <- GET(urlpages, accept_json(),
+                                use_proxy(url      = proxySettings$url,
+                                          port     = proxySettings$port,
+                                          username = proxySettings$UserName,
+                                          password = proxySettings$password,
+                                          auth     = proxySettings$auth))
+        } else { 
+          httpResponse1 <- GET(urlpages, accept_json())
+        }
+        
         results <- fromJSON(content(httpResponse1, as="text", encoding="UTF-8"))
         pages <- bind_rows(pages,results$Organisations)
   }
 
   return(pages)
 }
-
-

@@ -4,9 +4,16 @@
 \alias{getODS}
 \title{getODS}
 \usage{
-getODS(Name = "All", PostCode = "All", LastChangeDate = "All",
-  Status = "All", PrimaryRoleId = "All", NonPrimaryRoleId = "All",
-  OrgRecordClass = "All")
+getODS(
+  Name = "All",
+  PostCode = "All",
+  LastChangeDate = "All",
+  Status = "All",
+  PrimaryRoleId = "All",
+  NonPrimaryRoleId = "All",
+  OrgRecordClass = "All",
+  UseProxy = FALSE
+)
 }
 \arguments{
 \item{Name}{Search organisations based on name. Organisations that contain the argument string in their name are returned.;
@@ -30,6 +37,12 @@ quoted string; default "All" applies no filter}
 
 \item{OrgRecordClass}{Search for organisations based on their record class. Arguments can be "RC1" or "RC2".;
 quoted string; default "All" applies no filter}
+
+\item{UseProxy}{Whether to use proxy settings to connect to the directory.spineservices.nhs.uk/ODSAPISuite API.
+If TRUE, the function will look for a UseProxy.csv file in the package library extdata directory.
+The file must contain a single row of comma separated headers (url, port, username, password, auth)
+and a second row specifying the values to be passed to each of these httr::use_proxy() function arguments.
+All Argument headers must be present, leave values blank if not required. Quoted string, default FALSE}
 }
 \value{
 returns a data.frame containing the following details for the organisations that meet the filter specifications:
@@ -61,8 +74,10 @@ getODS(Name="Woodseats Medical Centre")
 
 }
 \seealso{
-Other odsR package functions: \code{\link{OrgRelLkpGP}},
-  \code{\link{OrgRelLkpNHSTrust}},
-  \code{\link{addorgname}}, \code{\link{getODSfull}}
+Other odsR package functions: 
+\code{\link{OrgRelLkpGP}()},
+\code{\link{OrgRelLkpNHSTrust}()},
+\code{\link{addorgname}()},
+\code{\link{getODSfull}()}
 }
 \concept{odsR package functions}

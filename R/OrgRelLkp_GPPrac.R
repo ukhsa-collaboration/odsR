@@ -1,4 +1,4 @@
-#' OrgRelLkp
+#' OrgRelLkpGP
 #'
 #' Generates an organisational lookup table from the NHS Digital ODS ORD API
 #' based on organisational relationship data.
@@ -16,6 +16,7 @@
 #'                        character vector, default = "None"
 #' @param FromDate The effective date from which to include Organisations operational on or after;
 #'                 character string in the format "yyyy-mm-dd", no default
+#' @inheritParams getODS
 #'
 #' @return returns a data.frame of Organisation codes, names, start dates and end dates plus the start and end dates
 #' that the organisation was in the specified role and related organisation codes & names and associated start and end dates
@@ -37,11 +38,11 @@
 #'
 #' # return GP Practice to CCG Lookup to include all organisations effective on or after 01-04-2013
 #' \dontrun{
-#' OrgRelLkpGP(PrimaryRole    = "RO177",
-#'           NonPrimaryRole = "RO76",
-#'           RelTypes       = "RE4",
+#' OrgRelLkpGP(PrimaryRole   = "RO177",
+#'           NonPrimaryRole  = "RO76",
+#'           RelTypes        = "RE4",
 #'           RelPrimaryRoles = "RO98",
-#'           FromDate       = "2013-04-01")
+#'           FromDate        = "2013-04-01")
 #' }
 #'
 #' # return GP practice to CCG/PCT Lookup to include all organisations effective on or after 01-04-2012
@@ -62,20 +63,28 @@
 
 
 # create function to generate Organisation lookup data.frame
-OrgRelLkpGP <- function(PrimaryRole, NonPrimaryRole = "All", RelTypes = "None", RelPrimaryRoles = "None", FromDate) {
+OrgRelLkpGP <- function(PrimaryRole, 
+                        NonPrimaryRole = "All", 
+                        RelTypes = "None", 
+                        RelPrimaryRoles = "None", 
+                        FromDate,
+                        UseProxy = FALSE) {
 
     # display experimental message
     message("Please Note that this function is experimental and has not been thoroughly QAd
              for every possible set of arguments. It has been written to enable the generation of GP Practice
-             to CCG lookup tables and is therefore only approved with the following arguments:
+             to CCG lookup tables with the following arguments:
              PrimaryRole RO177, NonPrimaryRole RO76, Reltypes RE4, RelPrimaryRoles RO98, FromDate 2013-04-01")
 
     # retrieve all organisations to include records for
     if(NonPrimaryRole == "All") {
-        allorgs <- getODS(PrimaryRoleId=PrimaryRole) %>%
+        allorgs <- getODS(PrimaryRoleId = PrimaryRole,
+                          UseProxy      = UseProxy) %>%
             unique()
     } else {
-        allorgs <- getODS(PrimaryRoleId=PrimaryRole,NonPrimaryRoleId=NonPrimaryRole) %>%
+        allorgs <- getODS(PrimaryRoleId    = PrimaryRole,
+                          NonPrimaryRoleId = NonPrimaryRole,
+                          UseProxy         = UseProxy) %>%
             unique()
     }
 
@@ -104,7 +113,7 @@ OrgRelLkpGP <- function(PrimaryRole, NonPrimaryRole = "All", RelTypes = "None", 
     for (i in (1:nrow(allorgs))) {
 
         addOrg <- NA
-        getOrg <- getODSfull(allorgs[i,2])
+        getOrg <- getODSfull(allorgs[i,2], UseProxy = UseProxy)
 
 
         # get Organisation Start and End dates

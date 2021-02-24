@@ -4,8 +4,13 @@
 \alias{addorgname}
 \title{addorgname}
 \usage{
-addorgname(data, CodeCol = "OrgId", NameCol = "OrgName",
-  insert = TRUE)
+addorgname(
+  data,
+  CodeCol = "OrgId",
+  NameCol = "OrgName",
+  insert = TRUE,
+  UseProxy = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame containing the Organisation Codes to add Organisation Names to, unquoted string, no default}
@@ -16,6 +21,12 @@ addorgname(data, CodeCol = "OrgId", NameCol = "OrgName",
 
 \item{insert}{whether the new OrgName column should be positioned immediately after the CodeCol column (TRUE
 or appended to the end of the data frame (FALSE), logical, default TRUE}
+
+\item{UseProxy}{Whether to use proxy settings to connect to the directory.spineservices.nhs.uk/ODSAPISuite API.
+If TRUE, the function will look for a UseProxy.csv file in the package library extdata directory.
+The file must contain a single row of comma separated headers (url, port, username, password, auth)
+and a second row specifying the values to be passed to each of these httr::use_proxy() function arguments.
+All Argument headers must be present, leave values blank if not required. Quoted string, default FALSE}
 }
 \value{
 returns the original data.frame with Organisation Name column added
@@ -37,8 +48,10 @@ addorgname(codelist, NameCol="MyNewColumnName", insert=FALSE)
 
 }
 \seealso{
-Other odsR package functions: \code{\link{OrgRelLkpGP}},
-  \code{\link{OrgRelLkpNHSTrust}},
-  \code{\link{getODSfull}}, \code{\link{getODS}}
+Other odsR package functions: 
+\code{\link{OrgRelLkpGP}()},
+\code{\link{OrgRelLkpNHSTrust}()},
+\code{\link{getODSfull}()},
+\code{\link{getODS}()}
 }
 \concept{odsR package functions}
